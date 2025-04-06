@@ -7,7 +7,7 @@ transformers
 sentence-transformers
 huggingface-hub
 gtts
-pygame
+playsound
 speechrecognition
 pyaudio ; platform_system == "Windows"
 audio_recorder_streamlit
