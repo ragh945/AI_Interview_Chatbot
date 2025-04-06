@@ -55,8 +55,8 @@ def record_and_transcribe():
     return "No audio recorded."
 
 def get_embeddings(api_key):
-    os.environ["HUGGINGFACEHUB_API_TOKEN"] = api_key
-    return HuggingFaceEmbeddings()
+    model_name = "sentence-transformers/paraphrase-MiniLM-L3-v2"  # smaller and fast
+    return HuggingFaceEmbeddings(model_name=model_name)
 
 def get_llm(model, api_key):
     os.environ["Groq_api_key"] = api_key
