@@ -4,11 +4,8 @@ os.environ["USE_TF"] = "0"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import streamlit as st
-import tempfile
-from gtts import gTTS
-import io
+import pyttsx3
 import speech_recognition as sr
-from audio_recorder_streamlit import audio_recorder
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_groq import ChatGroq
@@ -34,29 +31,23 @@ URLS = {
 DB_DIR = "faiss_db"
 
 def speak(text):
-    tts = gTTS(text=text, lang='en')
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
-        tts.save(fp.name)
-        st.audio(fp.name, format='audio/mp3')
-        
+    engine = pyttsx3.init()
+    engine.say(text)
+    engine.runAndWait()
 
-# Voice input using audio_recorder + SpeechRecognition
 def record_and_transcribe():
-    st.write("🎙️ Click the mic to record (10 seconds)...")
-    audio_bytes = audio_recorder(pause_threshold=2.0)
-    if audio_bytes:
-        recognizer = sr.Recognizer()
-        with sr.AudioFile(io.BytesIO(audio_bytes)) as source:
-            audio = recognizer.record(source)
+    recognizer = sr.Recognizer()
+    with sr.Microphone() as source:
+        st.write("🎧 Listening (10 seconds)...")
+        audio = recognizer.listen(source, phrase_time_limit=10)
         try:
             return recognizer.recognize_google(audio)
         except sr.UnknownValueError:
             return "Sorry, I could not understand the audio."
-    return "No audio recorded."
 
 def get_embeddings(api_key):
-    model_name = "sentence-transformers/paraphrase-MiniLM-L3-v2"  # smaller and fast
-    return HuggingFaceEmbeddings(model_name=model_name)
+    os.environ["HUGGINGFACEHUB_API_TOKEN"] = api_key
+    return HuggingFaceEmbeddings()
 
 def get_llm(model, api_key):
     os.environ["Groq_api_key"] = api_key
