@@ -4,8 +4,11 @@ os.environ["USE_TF"] = "0"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import streamlit as st
-import pyttsx3
+from gtts import gTTS
+import pygame
+import io
 import speech_recognition as sr
+from audio_recorder_streamlit import audio_recorder
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_groq import ChatGroq
@@ -31,19 +34,29 @@ URLS = {
 DB_DIR = "faiss_db"
 
 def speak(text):
-    engine = pyttsx3.init()
-    engine.say(text)
-    engine.runAndWait()
+    tts = gTTS(text=text, lang='en')
+    fp = io.BytesIO()
+    tts.write_to_fp(fp)
+    fp.seek(0)
+    pygame.mixer.init()
+    pygame.mixer.music.load(fp)
+    pygame.mixer.music.play()
+    while pygame.mixer.music.get_busy():
+        pygame.time.Clock().tick(10)
 
+# Voice input using audio_recorder + SpeechRecognition
 def record_and_transcribe():
-    recognizer = sr.Recognizer()
-    with sr.Microphone() as source:
-        st.write("🎧 Listening (10 seconds)...")
-        audio = recognizer.listen(source, phrase_time_limit=10)
+    st.write("🎙️ Click the mic to record (10 seconds)...")
+    audio_bytes = audio_recorder(pause_threshold=2.0)
+    if audio_bytes:
+        recognizer = sr.Recognizer()
+        with sr.AudioFile(io.BytesIO(audio_bytes)) as source:
+            audio = recognizer.record(source)
         try:
             return recognizer.recognize_google(audio)
         except sr.UnknownValueError:
             return "Sorry, I could not understand the audio."
+    return "No audio recorded."
 
 def get_embeddings(api_key):
     os.environ["HUGGINGFACEHUB_API_TOKEN"] = api_key
