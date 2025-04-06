@@ -100,5 +100,9 @@ This AI Interview Chatbot is an interactive, voice-enabled interviewer built usi
 ```bash
 pip install -r requirements.txt
 streamlit run main.py
+```
+
+ ![image](https://github.com/user-attachments/assets/298eadc8-7f5c-458c-88f6-1ea9a586c0e7)
+
 
 
