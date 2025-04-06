@@ -1,0 +1,11 @@
+streamlit
+openai
+langchain
+faiss-cpu
+pypdf
+pyttsx3
+SpeechRecognition
+scikit-learn
+pyaudio
+numpy
+langchain_groq
