@@ -1,13 +1,15 @@
-
 streamlit
-openai
 langchain
+langchain-community
+langchain-groq
 faiss-cpu
-pypdf
-pyttsx3
-SpeechRecognition
+transformers
+sentence-transformers
+huggingface-hub
+gtts
+pygame
+speechrecognition
+pyaudio ; platform_system == "Windows"
+audio_recorder_streamlit
 scikit-learn
-pyaudio
-numpy
-langchain_groq
-pyaudio==0.2.13
+matplotlib
