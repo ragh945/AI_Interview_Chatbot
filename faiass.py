@@ -6,7 +6,6 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 import streamlit as st
 import tempfile
 from gtts import gTTS
-import pygame
 import io
 import speech_recognition as sr
 from audio_recorder_streamlit import audio_recorder
