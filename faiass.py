@@ -34,15 +34,12 @@ URLS = {
 
 DB_DIR = "faiss_db"
 
-from gtts import gTTS
-import streamlit as st
-import tempfile
-
 def speak(text):
     tts = gTTS(text=text, lang='en')
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
         tts.save(fp.name)
         st.audio(fp.name, format='audio/mp3')
+        
 
 # Voice input using audio_recorder + SpeechRecognition
 def record_and_transcribe():
