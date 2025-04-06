@@ -4,6 +4,7 @@ os.environ["USE_TF"] = "0"
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import streamlit as st
+import tempfile
 from gtts import gTTS
 import pygame
 import io
@@ -33,16 +34,15 @@ URLS = {
 
 DB_DIR = "faiss_db"
 
+from gtts import gTTS
+import streamlit as st
+import tempfile
+
 def speak(text):
     tts = gTTS(text=text, lang='en')
-    fp = io.BytesIO()
-    tts.write_to_fp(fp)
-    fp.seek(0)
-    pygame.mixer.init()
-    pygame.mixer.music.load(fp)
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy():
-        pygame.time.Clock().tick(10)
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+        tts.save(fp.name)
+        st.audio(fp.name, format='audio/mp3')
 
 # Voice input using audio_recorder + SpeechRecognition
 def record_and_transcribe():
